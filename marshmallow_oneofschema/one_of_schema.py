@@ -58,6 +58,12 @@ class OneOfSchema(Schema):
     type_field_remove = True
     type_schemas = []
 
+    def __init__(self, *args, **kwargs):
+        self._schema_args = args
+        self._schema_kwargs = kwargs
+
+        super(OneOfSchema, self).__init__(*args, **kwargs)
+
     def get_obj_type(self, obj):
         """Returns name of object schema"""
         return obj.__class__.__name__
@@ -97,7 +103,7 @@ class OneOfSchema(Schema):
             })
 
         schema = (type_schema if isinstance(type_schema, Schema)
-                  else type_schema())
+                  else type_schema(*self._schema_args, **self._schema_kwargs))
 
         schema.context.update(getattr(self, 'context', {}))
 
@@ -160,7 +166,7 @@ class OneOfSchema(Schema):
             })
 
         schema = (type_schema if isinstance(type_schema, Schema)
-                  else type_schema())
+                  else type_schema(*self._schema_args, **self._schema_kwargs))
 
         schema.context.update(getattr(self, 'context', {}))
 
